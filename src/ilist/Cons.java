@@ -72,11 +72,11 @@ public int size() {
     // Search for "short-circuit evaluation" in the internet.
   }
   
+  public E head(){
+	  return this.head;
+  }
   
-  /**
- * @return The head of the list.
- */
-public E head(){
-	  return head;
+  public IList<E> tail(){
+	  return this.tail;
   }
 }

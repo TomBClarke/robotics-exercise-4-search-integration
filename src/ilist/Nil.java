@@ -37,4 +37,12 @@ public class Nil<E> implements IList<E> {
   public boolean has(E e) {
     return false;
   }
+  
+  public E head(){
+	  return null;
+  }
+  
+  public IList<E> tail(){
+	  return null;
+  }
 }

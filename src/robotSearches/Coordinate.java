@@ -4,13 +4,14 @@ package robotSearches;
  * @author Kyle Allen-Taylor
  */
 public class Coordinate {
-	public int x, y;
+	
+	private int x, y;
 
 	/**Constructs the coordinate, the x and y coordinate are required.
 	 * @param x The x coordinate.
 	 * @param y The y coordinate.
 	 */
-	Coordinate(int x, int y) {
+	public Coordinate(int x, int y) {
 		this.x = x;
 		this.y = y;
 	}

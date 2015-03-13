@@ -11,7 +11,9 @@ public interface IList<E> {
   public IList<E> reverse();
   public IList<E> append(IList<E> l);
   public IList<E> append(E e);
-  public boolean has(E e);  
+  public boolean has(E e);
+  public E head();
+  public IList<E> tail();
 }
 
 /*
