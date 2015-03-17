@@ -4,7 +4,7 @@ package robotSearches;
 // All we include is what is necessary to build a graph, in the class
 // graph.
 
-import java.util.*;
+import rp.util.SimpleSet;
 
 /**Creates a node, each node can store content of any element, and each node may also have successors which are the other nodes that node is connected to.
  * @author Kyle Allen-Taylor
@@ -15,7 +15,7 @@ public class Node<A> {
 
   private A contents; 
   // Keep the implementation of sets open, by using the Set interface:
-  private Set<Node<A>> successors; 
+  private SimpleSet<Node<A>> successors; 
 
   // We can only build a node with an empty set of successors:
   /**Constructs the node, contents are required here.
@@ -25,7 +25,7 @@ public Node (A contents) {
     this.contents = contents;
     // Choose any implementation of sets you please, but you need to
     // choose one.
-    this.successors = new LinkedHashSet<Node<A>>(); 
+    this.successors = new SimpleSet<Node<A>>(); 
   }
 
   public String toString(){
@@ -59,7 +59,7 @@ public A contents() {
   /**Returns the successors of the node.
  * @return The successors of the node.
  */
-public Set<Node<A>> successors() {
+public SimpleSet<Node<A>> successors() {
     return successors;
   }
 }

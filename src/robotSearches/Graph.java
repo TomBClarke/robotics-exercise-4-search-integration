@@ -1,9 +1,11 @@
 package robotSearches;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Queue;
+
 import ilist.*;
-
-import java.util.*;
-
+import rp.util.*;
 import maybe.*;
 
 // We represent a graph as a set of nodes. 
@@ -16,21 +18,21 @@ import maybe.*;
 public class Graph<A> {
 
 	// Keep the implementation of sets open, by using the Set interface:
-	private Set<Node<A>> nodes;
+	private SimpleSet<Node<A>> nodes;
 
 	// Constructs the empty graph:
 	/**
 	 * Constructs the graph using a linkedHashSet to store the nodes.
 	 */
 	public Graph() {
-		nodes = new LinkedHashSet<Node<A>>();
+		nodes = new SimpleSet<Node<A>>();
 	}
 
 	// Get method:
 	/**Returns the nodes within the graph
 	 * @return The nodes within the graph
 	 */
-	public Set<Node<A>> nodes() {
+	public SimpleSet<Node<A>> nodes() {
 		return nodes;
 	}
 
@@ -50,59 +52,51 @@ public class Graph<A> {
 		return node;
 	}
 	
-	/**Returns a path from a starting node to another node using a generalised approach.
-	 * This generalisation will perform a DFS when a MyStack object is passed as the container, 
-	 * a BFS when a MyQueue object is passed, and an A* search when a MyPriorityQueue object is passed.
-	 * @param origin The node we start our search from
-	 * @param destination The node we wish to find a path to
-	 * @param functions Holds both the heuristic function and the distance function
-	 * @param container The container for the path and therefore the type of search we make, DFS, BFS or A*
-	 * @return The path which we need to take from the origin to reach the destination node
+	/**
+	 * Finds a path from a start node to a target one.
+	 * 
+	 * @param x The start node.
+	 * @param p The predicate the end node must satisfy.
+	 * @return The list of nodes to pass through to get to the target, or nothing if it can't be reached.
 	 */
-	public Maybe<IList<Node<A>>> findPathFromGeneralisation(Node<A> origin, Node<A> destination, AStarFunctions<Node<A>> functions, Container<Node<A>> container)
-	{
-		Set<Node<A>> visited = new HashSet<Node<A>>();
-		Hashtable<Node<A>, Double> estimatedTotalCost = new Hashtable<Node<A>, Double>();
-		Hashtable<Node<A>, Node<A>> predecessors = new Hashtable<Node<A>, Node<A>>();
-		Hashtable<Node<A>, Double> Di = new Hashtable<Node<A>, Double>();
-		Di.put(origin, 0.0);
-		estimatedTotalCost.put(origin, functions.heuristicFunction(origin, destination));
-		container.add(origin);
+	public Maybe<IList<Node<A>>> findPathFrom(Node<A> x, Predicate<A> p) {
+		Queue<Node<A>> frontier = new Queue<Node<A>>();
+		SimpleSet<Node<A>> visited = new SimpleSet<Node<A>>();
+		@SuppressWarnings("deprecation")
+		Map<Node<A>,Node<A>> path = new HashMap<Node<A>,Node<A>>();
 		
-		while(!container.isEmpty()){
-			Node<A> node = container.poll();
-			//if the node from the queue has the same coordinates as the destination node, 
-			//then we have found our destination and we return the path.
-			if(node.contentsEquals(destination.contents())){
-				System.out.println("found the Node, calculating path...");
-				IList<Node<A>> path = new Cons<Node<A>>(node,new Nil<Node<A>>());
-				while (predecessors.containsKey(node)) {
-					path = new Cons<Node<A>>((predecessors.get(node)),path);
-					node = predecessors.get(node);						
-				} 
-				//finally return the list of nodes, which is the path to follow to get from one node to another.
-				return new Just<IList<Node<A>>>(path);
-			}
-			
-			visited.add(node);//We add that node to the visited set.
-			Set<Node<A>> successors = node.successors();
-			for (Iterator<Node<A>> iterator = successors.iterator(); iterator.hasNext();) {
-				Node<A> node2 = (Node<A>) iterator.next();
-				if(!visited.contains(node2)){
-					Double cost = Di.get(node) + functions.distanceFunction(node, node2);
-					
-					if(!container.contains(node2) || cost<Di.get(node2)){
-						predecessors.put(node2, node);
-						Di.put(node2, cost);
-						estimatedTotalCost.put(node2, cost + functions.heuristicFunction(node2, destination));
-						if(!container.contains(node2))
-							container.add(node2);
+		frontier.addElement(x);;
+		while (!frontier.isEmpty()) {
+			@SuppressWarnings("unchecked")
+			Node<A> y = (Node<A>) frontier.pop();
+			if (!visited.contains(y)) {
+				if (p.holds(y.contents())) {
+					IList<Node<A>> pathList = new Cons<Node<A>>(y, new Nil<Node<A>>());
+					while(!path.get(y).equals(x)){
+						pathList = pathList.append(path.get(y));
+						y = path.get(y);
 					}
+					pathList = pathList.append(x);
+					pathList = pathList.reverse();
+					frontier.empty();
+					return new Just<IList<Node<A>>>(pathList);
 				}
-				
+				visited.add(y);
+				if(!y.successors().isEmpty()){
+					for(Node<A> n : y.successors()){
+						if(!visited.contains(n)){
+							frontier.push(n);
+							path.put(n, y);
+						}
+					}
+				} else {
+					path.remove(y);
+				}
 			}
 		}
-		return new Nothing<IList<Node<A>>>();		
-	}
+
+		frontier.empty();
+		return new Nothing<IList<Node<A>>>();
+	}	
 
 }
