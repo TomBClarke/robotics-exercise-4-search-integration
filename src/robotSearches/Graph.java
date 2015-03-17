@@ -59,7 +59,7 @@ public class Graph<A> {
 	 * @param p The predicate the end node must satisfy.
 	 * @return The list of nodes to pass through to get to the target, or nothing if it can't be reached.
 	 */
-	public Maybe<IList<Node<A>>> findPathFrom(Node<A> x, Predicate<A> p) {
+	public Maybe<IList<Node<A>>> findPathFrom(Node<A> x, Node<A> p) {
 		Queue<Node<A>> frontier = new Queue<Node<A>>();
 		SimpleSet<Node<A>> visited = new SimpleSet<Node<A>>();
 		@SuppressWarnings("deprecation")
@@ -70,7 +70,7 @@ public class Graph<A> {
 			@SuppressWarnings("unchecked")
 			Node<A> y = (Node<A>) frontier.pop();
 			if (!visited.contains(y)) {
-				if (p.holds(y.contents())) {
+				if (p.contents().equals(y.contents())) {
 					IList<Node<A>> pathList = new Cons<Node<A>>(y, new Nil<Node<A>>());
 					while(!path.get(y).equals(x)){
 						pathList = pathList.append(path.get(y));
@@ -78,10 +78,11 @@ public class Graph<A> {
 					}
 					pathList = pathList.append(x);
 					pathList = pathList.reverse();
-					frontier.empty();
 					return new Just<IList<Node<A>>>(pathList);
 				}
+				
 				visited.add(y);
+				
 				if(!y.successors().isEmpty()){
 					for(Node<A> n : y.successors()){
 						if(!visited.contains(n)){
@@ -95,7 +96,6 @@ public class Graph<A> {
 			}
 		}
 
-		frontier.empty();
 		return new Nothing<IList<Node<A>>>();
 	}	
 
