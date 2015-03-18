@@ -6,21 +6,17 @@ import java.util.Queue;
 
 import ilist.*;
 import rp.util.*;
-import maybe.*;
 
-// We represent a graph as a set of nodes. 
-// This is a minimal class so that a graph can be created.
-
-/**The Graph class allows a graph of coordinates to be entered and then searched. Returning paths and nodes using Depth First Search, Breadth First Search and A* Search.
+/**
+ * The Graph class allows a graph of coordinates to be entered and then searched. Returning paths and nodes using Depth First Search, Breadth First Search and A* Search.
+ * 
  * @author Kyle Allen-Taylor
  * @param <A> Element the graph will consist of.
  */
 public class Graph<A> {
 
-	// Keep the implementation of sets open, by using the Set interface:
 	private SimpleSet<Node<A>> nodes;
 
-	// Constructs the empty graph:
 	/**
 	 * Constructs the graph using a linkedHashSet to store the nodes.
 	 */
@@ -28,7 +24,6 @@ public class Graph<A> {
 		nodes = new SimpleSet<Node<A>>();
 	}
 
-	// Get method:
 	/**Returns the nodes within the graph
 	 * @return The nodes within the graph
 	 */
@@ -36,17 +31,16 @@ public class Graph<A> {
 		return nodes;
 	}
 
-	// Finds or else creates a node with a given contents c:
 	/** Returns the node with specified coordinates from the graph.
 	 * @param c The coordinates of the node we wish to search for.
 	 * @return The node with the coordinates we was searching for.
 	 */
 	public Node<A> nodeWith(A c) {
-		for (Node<A> node : nodes) { // Inefficient for large graph.
+		for (Node<A> node : nodes) {
 			if (node.contentsEquals(c))
-				return node; // Found.
+				return node;
 		}
-		// Not found, hence create it:
+		
 		Node<A> node = new Node<A>(c);
 		nodes.add(node);
 		return node;
@@ -59,7 +53,7 @@ public class Graph<A> {
 	 * @param p The predicate the end node must satisfy.
 	 * @return The list of nodes to pass through to get to the target, or nothing if it can't be reached.
 	 */
-	public Maybe<IList<Node<A>>> findPathFrom(Node<A> x, Node<A> p) {
+	public IList<Node<A>> findPathFrom(Node<A> x, Node<A> p) {
 		Queue<Node<A>> frontier = new Queue<Node<A>>();
 		SimpleSet<Node<A>> visited = new SimpleSet<Node<A>>();
 		@SuppressWarnings("deprecation")
@@ -78,7 +72,7 @@ public class Graph<A> {
 					}
 					pathList = pathList.append(x);
 					pathList = pathList.reverse();
-					return new Just<IList<Node<A>>>(pathList);
+					return pathList;
 				}
 				
 				visited.add(y);
@@ -96,7 +90,7 @@ public class Graph<A> {
 			}
 		}
 
-		return new Nothing<IList<Node<A>>>();
+		return new Nil<Node<A>>();
 	}	
 
 }
