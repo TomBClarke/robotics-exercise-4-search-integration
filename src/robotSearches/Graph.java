@@ -72,6 +72,7 @@ public class Graph<A> {
 					}
 					pathList = pathList.append(x);
 					pathList = pathList.reverse();
+					//System.out.println("path = " + pathList);
 					return pathList;
 				}
 				
