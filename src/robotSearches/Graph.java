@@ -2,7 +2,6 @@ package robotSearches;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Queue;
 
 import ilist.*;
 import rp.util.*;
@@ -13,6 +12,7 @@ import rp.util.*;
  * @author Kyle Allen-Taylor
  * @param <A> Element the graph will consist of.
  */
+@SuppressWarnings("deprecation")
 public class Graph<A> {
 
 	private SimpleSet<Node<A>> nodes;
@@ -53,16 +53,14 @@ public class Graph<A> {
 	 * @param p The predicate the end node must satisfy.
 	 * @return The list of nodes to pass through to get to the target, or nothing if it can't be reached.
 	 */
-	public IList<Node<A>> findPathFrom(Node<A> x, Node<A> p) {
-		Queue<Node<A>> frontier = new Queue<Node<A>>();
+	public IList<Node<A>> findPathFrom(Node<A> x, Node<A> p, IQueueContainer<A> frontier) {
 		SimpleSet<Node<A>> visited = new SimpleSet<Node<A>>();
 		@SuppressWarnings("deprecation")
 		Map<Node<A>,Node<A>> path = new HashMap<Node<A>,Node<A>>();
 		
-		frontier.addElement(x);;
+		frontier.add(x);
 		while (!frontier.isEmpty()) {
-			@SuppressWarnings("unchecked")
-			Node<A> y = (Node<A>) frontier.pop();
+			Node<A> y = (Node<A>) frontier.poll();
 			if (!visited.contains(y)) {
 				if (p.contents().equals(y.contents())) {
 					IList<Node<A>> pathList = new Cons<Node<A>>(y, new Nil<Node<A>>());
@@ -81,7 +79,7 @@ public class Graph<A> {
 				if(!y.successors().isEmpty()){
 					for(Node<A> n : y.successors()){
 						if(!visited.contains(n)){
-							frontier.push(n);
+							frontier.add(n);
 							path.put(n, y);
 						}
 					}
