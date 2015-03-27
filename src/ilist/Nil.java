@@ -1,48 +1,47 @@
 package ilist;
 
 /**
- * Implementation of the empty list
- * (using the "composite pattern").
+ * Implementation of the empty list (using the "composite pattern").
  */
 
 public class Nil<E> implements IList<E> {
-    
-  public Nil() { // Nothing to do in the constructor!
-  }              // Could simply remove it.
 
-  public boolean isEmpty() { 
-    return true; 
-  }
+	public Nil() { // Nothing to do in the constructor!
+	} // Could simply remove it.
 
-  public int size() {
-    return 0;
-  }
+	public boolean isEmpty() {
+		return true;
+	}
 
-  public String toString() { 
-    return "Nil"; 
-  }
+	public int size() {
+		return 0;
+	}
 
-  public IList<E> append(IList<E> l) {
-    return l;
-  }
+	public String toString() {
+		return "Nil";
+	}
 
-  public IList<E> append(E e) {
-    return new Cons<E>(e , this);
-  }
+	public IList<E> append(IList<E> l) {
+		return l;
+	}
 
-  public IList<E> reverse() {
-    return this;
-  }
+	public IList<E> append(E e) {
+		return new Cons<E>(e, this);
+	}
 
-  public boolean has(E e) {
-    return false;
-  }
-  
-  public E head(){
-	  return null;
-  }
-  
-  public IList<E> tail(){
-	  return null;
-  }
+	public IList<E> reverse() {
+		return this;
+	}
+
+	public boolean has(E e) {
+		return false;
+	}
+
+	public E head() {
+		return null;
+	}
+
+	public IList<E> tail() {
+		return null;
+	}
 }
